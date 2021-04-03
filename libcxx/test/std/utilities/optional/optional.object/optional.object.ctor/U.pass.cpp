@@ -131,7 +131,7 @@ void test_explicit() {
             assert(T::value_constructed == 1);
             assert(T::move_constructed == 0);
             assert(T::copy_constructed == 0);
-            assert(t.value().value == 42);
+            assert(t->value == 42);
         }
         assert(T::alive == 0);
     }

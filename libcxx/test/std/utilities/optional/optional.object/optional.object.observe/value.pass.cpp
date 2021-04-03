@@ -42,7 +42,7 @@ constexpr int
 test()
 {
     optional<Y> opt{Y{}};
-    return opt.value().test();
+    return opt->test();
 }
 
 
@@ -50,14 +50,15 @@ int main(int, char**)
 {
     {
         optional<X> opt; ((void)opt);
-        ASSERT_NOT_NOEXCEPT(opt.value());
-        ASSERT_SAME_TYPE(decltype(opt.value()), X&);
+        //ASSERT_NOT_NOEXCEPT(opt.value());
+        ASSERT_SAME_TYPE(decltype(*opt), X&);
     }
     {
         optional<X> opt;
         opt.emplace();
-        assert(opt.value().test() == 4);
+        assert(opt->test() == 4);
     }
+    /*
 #ifndef TEST_HAS_NO_EXCEPTIONS
     {
         optional<X> opt;
@@ -70,7 +71,8 @@ int main(int, char**)
         {
         }
     }
-#endif
+    
+#endif*/
     static_assert(test() == 7, "");
 
   return 0;

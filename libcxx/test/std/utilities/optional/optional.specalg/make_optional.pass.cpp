@@ -32,7 +32,7 @@ int main(int, char**)
     {
         constexpr auto opt = make_optional(2);
         ASSERT_SAME_TYPE(decltype(opt), const optional<int>);
-        static_assert(opt.value() == 2);
+        static_assert(*opt == 2);
     }
     {
         optional<int> opt = make_optional(2);

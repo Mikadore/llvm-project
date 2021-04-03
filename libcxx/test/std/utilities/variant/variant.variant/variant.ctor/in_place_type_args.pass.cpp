@@ -72,39 +72,39 @@ void test_ctor_basic() {
   {
     constexpr std::variant<int> v(std::in_place_type<int>, 42);
     static_assert(v.index() == 0, "");
-    static_assert(std::get<0>(v) == 42, "");
+    static_assert(*std::get_if<0>(&v) == 42, "");
   }
   {
     constexpr std::variant<int, long> v(std::in_place_type<long>, 42);
     static_assert(v.index() == 1, "");
-    static_assert(std::get<1>(v) == 42, "");
+    static_assert(*std::get_if<1>(&v) == 42, "");
   }
   {
     constexpr std::variant<int, const int, long> v(
         std::in_place_type<const int>, 42);
     static_assert(v.index() == 1, "");
-    static_assert(std::get<1>(v) == 42, "");
+    static_assert(*std::get_if<1>(&v) == 42, "");
   }
   {
     using V = std::variant<const int, volatile int, int>;
     int x = 42;
     V v(std::in_place_type<const int>, x);
     assert(v.index() == 0);
-    assert(std::get<0>(v) == x);
+    assert(*std::get_if<0>(&v) == x);
   }
   {
     using V = std::variant<const int, volatile int, int>;
     int x = 42;
     V v(std::in_place_type<volatile int>, x);
     assert(v.index() == 1);
-    assert(std::get<1>(v) == x);
+    assert(*std::get_if<1>(&v) == x);
   }
   {
     using V = std::variant<const int, volatile int, int>;
     int x = 42;
     V v(std::in_place_type<int>, x);
     assert(v.index() == 2);
-    assert(std::get<2>(v) == x);
+    assert(*std::get_if<2>(&v) == x);
   }
 }
 

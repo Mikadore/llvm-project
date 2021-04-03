@@ -108,3 +108,18 @@ Consult the
 page for detailed information on configuring and compiling LLVM. You can visit
 [Directory Layout](https://llvm.org/docs/GettingStarted.html#directory-layout)
 to learn about the layout of the source code tree.
+
+# Note:
+I had to change the CMakesLists.txt in the `llvm` and manually
+`set(LLVM_ENABLE_PROJECTS)` because it just didn't work from
+the command line.
+
+The edited files are in `<ROOT>/libcxx/include`
+The relevant tests are under `<ROOT>/libcxx/test/std/`
+
+The `hacks/test.sh` script won't work as it uses absolute paths,
+but it does showcase which tests were edited.
+
+`hacks/notes.md` summarizes the changes made
+
+The base of this repo is the 11.0.0 source tarball from https://releases.llvm.org/download.html

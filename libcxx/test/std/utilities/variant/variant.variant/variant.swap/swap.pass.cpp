@@ -207,20 +207,20 @@ void test_swap_valueless_by_exception() {
     { // member swap
       v1.swap(v2);
       assert(v1.valueless_by_exception());
-      assert(std::get<0>(v2) == 42);
+      assert(*std::get_if<0>(&v2) == 42);
       // swap again
       v2.swap(v1);
       assert(v2.valueless_by_exception());
-      assert(std::get<0>(v1) == 42);
+      assert(*std::get_if<0>(&v1) == 42);
     }
     { // non-member swap
       swap(v1, v2);
       assert(v1.valueless_by_exception());
-      assert(std::get<0>(v2) == 42);
+      assert(*std::get_if<0>(&v2) == 42);
       // swap again
       swap(v1, v2);
       assert(v2.valueless_by_exception());
-      assert(std::get<0>(v1) == 42);
+      assert(*std::get_if<0>(&v1) == 42);
     }
   }
 #endif
@@ -235,12 +235,12 @@ void test_swap_same_alternative() {
     V v2(std::in_place_index<0>, 100);
     v1.swap(v2);
     assert(T::swap_called == 1);
-    assert(std::get<0>(v1).value == 100);
-    assert(std::get<0>(v2).value == 42);
+    assert((*std::get_if<0>(&v1)).value == 100);
+    assert((*std::get_if<0>(&v2)).value == 42);
     swap(v1, v2);
     assert(T::swap_called == 2);
-    assert(std::get<0>(v1).value == 42);
-    assert(std::get<0>(v2).value == 100);
+    assert((*std::get_if<0>(&v1)).value == 42);
+    assert((*std::get_if<0>(&v2)).value == 100);
   }
   {
     using T = NothrowMoveable;
@@ -252,15 +252,15 @@ void test_swap_same_alternative() {
     assert(T::swap_called == 0);
     assert(T::move_called == 1);
     assert(T::move_assign_called == 2);
-    assert(std::get<0>(v1).value == 100);
-    assert(std::get<0>(v2).value == 42);
+    assert((*std::get_if<0>(&v1)).value == 100);
+    assert((*std::get_if<0>(&v2)).value == 42);
     T::reset();
     swap(v1, v2);
     assert(T::swap_called == 0);
     assert(T::move_called == 1);
     assert(T::move_assign_called == 2);
-    assert(std::get<0>(v1).value == 42);
-    assert(std::get<0>(v2).value == 100);
+    assert((*std::get_if<0>(&v1)).value == 42);
+    assert((*std::get_if<0>(&v2)).value == 100);
   }
 #ifndef TEST_HAS_NO_EXCEPTIONS
   {
@@ -277,8 +277,8 @@ void test_swap_same_alternative() {
     assert(T::swap_called == 1);
     assert(T::move_called == 0);
     assert(T::move_assign_called == 0);
-    assert(std::get<0>(v1).value == 42);
-    assert(std::get<0>(v2).value == 100);
+    assert((*std::get_if<0>(&v1)).value == 42);
+    assert((*std::get_if<0>(&v2)).value == 100);
   }
   {
     using T = ThrowingMoveCtor;
@@ -293,9 +293,9 @@ void test_swap_same_alternative() {
     }
     assert(T::move_called == 1); // call threw
     assert(T::move_assign_called == 0);
-    assert(std::get<0>(v1).value ==
+    assert((*std::get_if<0>(&v1)).value ==
            42); // throw happened before v1 was moved from
-    assert(std::get<0>(v2).value == 100);
+    assert((*std::get_if<0>(&v2)).value == 100);
   }
   {
     using T = ThrowingMoveAssignNothrowMoveCtor;
@@ -310,8 +310,8 @@ void test_swap_same_alternative() {
     }
     assert(T::move_called == 1);
     assert(T::move_assign_called == 1);  // call threw and didn't complete
-    assert(std::get<0>(v1).value == -1); // v1 was moved from
-    assert(std::get<0>(v2).value == 100);
+    assert((*std::get_if<0>(&v1)).value == -1); // v1 was moved from
+    assert((*std::get_if<0>(&v2)).value == 100);
   }
 #endif
 }
@@ -330,16 +330,16 @@ void test_swap_different_alternatives() {
     LIBCPP_ASSERT(T::move_called == 1);
     assert(T::move_called <= 2);
     assert(T::move_assign_called == 0);
-    assert(std::get<1>(v1) == 100);
-    assert(std::get<0>(v2).value == 42);
+    assert(*std::get_if<1>(&v1) == 100);
+    assert((*std::get_if<0>(&v2)).value == 42);
     T::reset();
     swap(v1, v2);
     assert(T::swap_called == 0);
     LIBCPP_ASSERT(T::move_called == 2);
     assert(T::move_called <= 2);
     assert(T::move_assign_called == 0);
-    assert(std::get<0>(v1).value == 42);
-    assert(std::get<1>(v2) == 100);
+    assert((*std::get_if<0>(&v1)).value == 42);
+    assert(*std::get_if<1>(&v2) == 100);
   }
 #ifndef TEST_HAS_NO_EXCEPTIONS
   {
@@ -361,11 +361,11 @@ void test_swap_different_alternatives() {
     // FIXME: libc++ shouldn't move from T2 here.
     LIBCPP_ASSERT(T2::move_called == 1);
     assert(T2::move_called <= 1);
-    assert(std::get<0>(v1).value == 42);
+    assert((*std::get_if<0>(&v1)).value == 42);
     if (T2::move_called != 0)
       assert(v2.valueless_by_exception());
     else
-      assert(std::get<1>(v2).value == 100);
+      assert(std::get_if<1>(&v2)->value == 100);
   }
   {
     using T1 = NonThrowingNonNoexceptType;
@@ -388,8 +388,8 @@ void test_swap_different_alternatives() {
     if (T1::move_called != 0)
       assert(v1.valueless_by_exception());
     else
-      assert(std::get<0>(v1).value == 42);
-    assert(std::get<1>(v2).value == 100);
+      assert((*std::get_if<0>(&v1)).value == 42);
+    assert(std::get_if<1>(&v2)->value == 100);
   }
 // FIXME: The tests below are just very libc++ specific
 #ifdef _LIBCPP_VERSION
@@ -402,9 +402,9 @@ void test_swap_different_alternatives() {
     V v2(std::in_place_index<1>, 100);
     v1.swap(v2);
     assert(T2::move_called == 2);
-    assert(std::get<1>(v1).value == 100);
-    assert(std::get<0>(v2).value == 42);
-    assert(std::get<0>(v2).move_count == 1);
+    assert((*std::get_if<1>(&v1)).value == 100);
+    assert((*std::get_if<0>(&v2)).value == 42);
+    assert((*std::get_if<0>(&v2)).move_count == 1);
   }
   {
     using T1 = NonThrowingNonNoexceptType;
@@ -420,7 +420,7 @@ void test_swap_different_alternatives() {
     }
     assert(T1::move_called == 1);
     assert(v1.valueless_by_exception());
-    assert(std::get<0>(v2).value == 42);
+    assert((*std::get_if<0>(&v2)).value == 42);
   }
 #endif
 // testing libc++ extension. If either variant stores a nothrow move
@@ -447,8 +447,8 @@ void test_swap_different_alternatives() {
     assert(T2::swap_called == 0);
     assert(T2::move_called == 2);
     assert(T2::move_assign_called == 0);
-    assert(std::get<0>(v1).value == 42);
-    assert(std::get<1>(v2).value == 100);
+    assert((*std::get_if<0>(&v1)).value == 42);
+    assert(std::get_if<1>(&v2)->value == 100);
     // swap again, but call v2's swap.
     T1::reset();
     T2::reset();
@@ -463,8 +463,8 @@ void test_swap_different_alternatives() {
     assert(T2::swap_called == 0);
     assert(T2::move_called == 2);
     assert(T2::move_assign_called == 0);
-    assert(std::get<0>(v1).value == 42);
-    assert(std::get<1>(v2).value == 100);
+    assert((*std::get_if<0>(&v1)).value == 42);
+    assert(std::get_if<1>(&v2)->value == 100);
   }
 #endif // _LIBCPP_VERSION
 #endif

@@ -73,17 +73,17 @@ void test_basic() {
   V v;
   auto& ref1 = v.emplace<InitList>({1, 2, 3});
   static_assert(std::is_same_v<InitList&,decltype(ref1)>, "");
-  assert(std::get<InitList>(v).size == 3);
-  assert(&ref1 == &std::get<InitList>(v));
+  assert((*std::get_if<InitList>(&v)).size == 3);
+  assert(&ref1 == std::get_if<InitList>(&v));
   auto& ref2 = v.emplace<InitListArg>({1, 2, 3, 4}, 42);
   static_assert(std::is_same_v<InitListArg&,decltype(ref2)>, "");
-  assert(std::get<InitListArg>(v).size == 4);
-  assert(std::get<InitListArg>(v).value == 42);
-  assert(&ref2 == &std::get<InitListArg>(v));
+  assert((*std::get_if<InitListArg>(&v)).size == 4);
+  assert((*std::get_if<InitListArg>(&v)).value == 42);
+  assert(&ref2 == std::get_if<InitListArg>(&v));
   auto& ref3 = v.emplace<InitList>({1});
   static_assert(std::is_same_v<InitList&,decltype(ref3)>, "");
-  assert(std::get<InitList>(v).size == 1);
-  assert(&ref3 == &std::get<InitList>(v));
+  assert((*std::get_if<InitList>(&v)).size == 1);
+  assert(&ref3 == std::get_if<InitList>(&v));
 }
 
 int main(int, char**) {

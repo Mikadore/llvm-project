@@ -941,40 +941,19 @@ public:
 
     _LIBCPP_INLINE_VISIBILITY
     _LIBCPP_AVAILABILITY_THROW_BAD_OPTIONAL_ACCESS
-    constexpr value_type const& value() const&
-    {
-        if (!this->has_value())
-            __throw_bad_optional_access();
-        return this->__get();
-    }
+    constexpr value_type const& value() const& = delete;
 
     _LIBCPP_INLINE_VISIBILITY
     _LIBCPP_AVAILABILITY_THROW_BAD_OPTIONAL_ACCESS
-    constexpr value_type& value() &
-    {
-        if (!this->has_value())
-            __throw_bad_optional_access();
-        return this->__get();
-    }
+    constexpr value_type& value() & = delete;
+    _LIBCPP_INLINE_VISIBILITY
+    _LIBCPP_AVAILABILITY_THROW_BAD_OPTIONAL_ACCESS
+    constexpr value_type&& value() && = delete;
 
     _LIBCPP_INLINE_VISIBILITY
     _LIBCPP_AVAILABILITY_THROW_BAD_OPTIONAL_ACCESS
-    constexpr value_type&& value() &&
-    {
-        if (!this->has_value())
-            __throw_bad_optional_access();
-        return _VSTD::move(this->__get());
-    }
-
-    _LIBCPP_INLINE_VISIBILITY
-    _LIBCPP_AVAILABILITY_THROW_BAD_OPTIONAL_ACCESS
-    constexpr value_type const&& value() const&&
-    {
-        if (!this->has_value())
-            __throw_bad_optional_access();
-        return _VSTD::move(this->__get());
-    }
-
+    constexpr value_type const&& value() const&& = delete;
+    
     template <class _Up>
     _LIBCPP_INLINE_VISIBILITY
     constexpr value_type value_or(_Up&& __v) const&

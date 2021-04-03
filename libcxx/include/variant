@@ -1381,87 +1381,49 @@ constexpr bool holds_alternative(const variant<_Types...>& __v) noexcept {
 template <size_t _Ip, class _Vp>
 inline _LIBCPP_INLINE_VISIBILITY
 _LIBCPP_AVAILABILITY_THROW_BAD_VARIANT_ACCESS
-constexpr auto&& __generic_get(_Vp&& __v) {
-  using __variant_detail::__access::__variant;
-  if (!__holds_alternative<_Ip>(__v)) {
-    __throw_bad_variant_access();
-  }
-  return __variant::__get_alt<_Ip>(_VSTD::forward<_Vp>(__v)).__value;
-}
+constexpr auto&& __generic_get(_Vp&& __v) = delete; 
 
 template <size_t _Ip, class... _Types>
 inline _LIBCPP_INLINE_VISIBILITY
 _LIBCPP_AVAILABILITY_THROW_BAD_VARIANT_ACCESS
 constexpr variant_alternative_t<_Ip, variant<_Types...>>& get(
-    variant<_Types...>& __v) {
-  static_assert(_Ip < sizeof...(_Types));
-  static_assert(!is_void_v<variant_alternative_t<_Ip, variant<_Types...>>>);
-  return __generic_get<_Ip>(__v);
-}
+    variant<_Types...>& __v) = delete;
 
 template <size_t _Ip, class... _Types>
 inline _LIBCPP_INLINE_VISIBILITY
 _LIBCPP_AVAILABILITY_THROW_BAD_VARIANT_ACCESS
 constexpr variant_alternative_t<_Ip, variant<_Types...>>&& get(
-    variant<_Types...>&& __v) {
-  static_assert(_Ip < sizeof...(_Types));
-  static_assert(!is_void_v<variant_alternative_t<_Ip, variant<_Types...>>>);
-  return __generic_get<_Ip>(_VSTD::move(__v));
-}
+    variant<_Types...>&& __v) = delete;
 
 template <size_t _Ip, class... _Types>
 inline _LIBCPP_INLINE_VISIBILITY
 _LIBCPP_AVAILABILITY_THROW_BAD_VARIANT_ACCESS
 constexpr const variant_alternative_t<_Ip, variant<_Types...>>& get(
-    const variant<_Types...>& __v) {
-  static_assert(_Ip < sizeof...(_Types));
-  static_assert(!is_void_v<variant_alternative_t<_Ip, variant<_Types...>>>);
-  return __generic_get<_Ip>(__v);
-}
+    const variant<_Types...>& __v) = delete;
 
 template <size_t _Ip, class... _Types>
 inline _LIBCPP_INLINE_VISIBILITY
 _LIBCPP_AVAILABILITY_THROW_BAD_VARIANT_ACCESS
 constexpr const variant_alternative_t<_Ip, variant<_Types...>>&& get(
-    const variant<_Types...>&& __v) {
-  static_assert(_Ip < sizeof...(_Types));
-  static_assert(!is_void_v<variant_alternative_t<_Ip, variant<_Types...>>>);
-  return __generic_get<_Ip>(_VSTD::move(__v));
-}
+    const variant<_Types...>&& __v) = delete;
 
 template <class _Tp, class... _Types>
 inline _LIBCPP_INLINE_VISIBILITY
 _LIBCPP_AVAILABILITY_THROW_BAD_VARIANT_ACCESS
-constexpr _Tp& get(variant<_Types...>& __v) {
-  static_assert(!is_void_v<_Tp>);
-  return _VSTD::get<__find_exactly_one_t<_Tp, _Types...>::value>(__v);
-}
+constexpr _Tp& get(variant<_Types...>& __v) = delete;
+template <class _Tp, class... _Types>
+inline _LIBCPP_INLINE_VISIBILITY
+_LIBCPP_AVAILABILITY_THROW_BAD_VARIANT_ACCESS
+constexpr _Tp&& get(variant<_Types...>&& __v) = delete;
+template <class _Tp, class... _Types>
+inline _LIBCPP_INLINE_VISIBILITY
+_LIBCPP_AVAILABILITY_THROW_BAD_VARIANT_ACCESS
+constexpr const _Tp& get(const variant<_Types...>& __v) = delete;
 
 template <class _Tp, class... _Types>
 inline _LIBCPP_INLINE_VISIBILITY
 _LIBCPP_AVAILABILITY_THROW_BAD_VARIANT_ACCESS
-constexpr _Tp&& get(variant<_Types...>&& __v) {
-  static_assert(!is_void_v<_Tp>);
-  return _VSTD::get<__find_exactly_one_t<_Tp, _Types...>::value>(
-      _VSTD::move(__v));
-}
-
-template <class _Tp, class... _Types>
-inline _LIBCPP_INLINE_VISIBILITY
-_LIBCPP_AVAILABILITY_THROW_BAD_VARIANT_ACCESS
-constexpr const _Tp& get(const variant<_Types...>& __v) {
-  static_assert(!is_void_v<_Tp>);
-  return _VSTD::get<__find_exactly_one_t<_Tp, _Types...>::value>(__v);
-}
-
-template <class _Tp, class... _Types>
-inline _LIBCPP_INLINE_VISIBILITY
-_LIBCPP_AVAILABILITY_THROW_BAD_VARIANT_ACCESS
-constexpr const _Tp&& get(const variant<_Types...>&& __v) {
-  static_assert(!is_void_v<_Tp>);
-  return _VSTD::get<__find_exactly_one_t<_Tp, _Types...>::value>(
-      _VSTD::move(__v));
-}
+constexpr const _Tp&& get(const variant<_Types...>&& __v) = delete;
 
 template <size_t _Ip, class _Vp>
 inline _LIBCPP_INLINE_VISIBILITY

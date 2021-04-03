@@ -206,19 +206,9 @@ struct _LIBCPP_TEMPLATE_VIS array
         return __elems_[__n];
     }
 
-    _LIBCPP_CONSTEXPR_AFTER_CXX14 reference at(size_type __n)
-    {
-        if (__n >= _Size)
-            __throw_out_of_range("array::at");
-        return __elems_[__n];
-    }
+    _LIBCPP_CONSTEXPR_AFTER_CXX14 reference at(size_type __n) = delete;
 
-    _LIBCPP_CONSTEXPR_AFTER_CXX11 const_reference at(size_type __n) const
-    {
-        if (__n >= _Size)
-            __throw_out_of_range("array::at");
-        return __elems_[__n];
-    }
+    _LIBCPP_CONSTEXPR_AFTER_CXX11 const_reference at(size_type __n) const = delete;
 
     _LIBCPP_INLINE_VISIBILITY _LIBCPP_CONSTEXPR_AFTER_CXX14 reference front()             _NOEXCEPT {return (*this)[0];}
     _LIBCPP_INLINE_VISIBILITY _LIBCPP_CONSTEXPR_AFTER_CXX11 const_reference front() const _NOEXCEPT {return (*this)[0];}
@@ -322,16 +312,10 @@ struct _LIBCPP_TEMPLATE_VIS array<_Tp, 0>
     }
 
     _LIBCPP_INLINE_VISIBILITY _LIBCPP_CONSTEXPR_AFTER_CXX14
-    reference at(size_type) {
-      __throw_out_of_range("array<T, 0>::at");
-      _LIBCPP_UNREACHABLE();
-    }
+    reference at(size_type) = delete;
 
     _LIBCPP_INLINE_VISIBILITY _LIBCPP_CONSTEXPR_AFTER_CXX11
-    const_reference at(size_type) const {
-      __throw_out_of_range("array<T, 0>::at");
-      _LIBCPP_UNREACHABLE();
-    }
+    const_reference at(size_type) const = delete;
 
     _LIBCPP_INLINE_VISIBILITY _LIBCPP_CONSTEXPR_AFTER_CXX14
     reference front() _NOEXCEPT {

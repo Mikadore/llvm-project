@@ -84,35 +84,35 @@ void test_default_ctor_basic() {
   {
     std::variant<int> v;
     assert(v.index() == 0);
-    assert(std::get<0>(v) == 0);
+    assert(*std::get_if<0>(&v) == 0);
   }
   {
     std::variant<int, long> v;
     assert(v.index() == 0);
-    assert(std::get<0>(v) == 0);
+    assert(*std::get_if<0>(&v) == 0);
   }
   {
     std::variant<int, NonDefaultConstructible> v;
     assert(v.index() == 0);
-    assert(std::get<0>(v) == 0);
+    assert(*std::get_if<0>(&v) == 0);
   }
   {
     using V = std::variant<int, long>;
     constexpr V v;
     static_assert(v.index() == 0, "");
-    static_assert(std::get<0>(v) == 0, "");
+    static_assert(*std::get_if<0>(&v) == 0, "");
   }
   {
     using V = std::variant<int, long>;
     constexpr V v;
     static_assert(v.index() == 0, "");
-    static_assert(std::get<0>(v) == 0, "");
+    static_assert(*std::get_if<0>(&v) == 0, "");
   }
   {
     using V = std::variant<int, NonDefaultConstructible>;
     constexpr V v;
     static_assert(v.index() == 0, "");
-    static_assert(std::get<0>(v) == 0, "");
+    static_assert(*std::get_if<0>(&v) == 0, "");
   }
 }
 

@@ -71,7 +71,7 @@ int main(int, char**)
         assert(T::alive == 1);
         assert(T::move_constructed == 1);
         assert(static_cast<bool>(opt) == true);
-        assert(opt.value().value == 3);
+        assert(opt->value == 3);
     }
     {
         typedef ExplicitTestTypes::TestType T;
@@ -81,7 +81,7 @@ int main(int, char**)
         assert(T::alive == 1);
         assert(T::move_constructed == 1);
         assert(static_cast<bool>(opt) == true);
-        assert(opt.value().value == 3);
+        assert(opt->value == 3);
     }
     {
         typedef TestTypes::TestType T;
@@ -92,13 +92,13 @@ int main(int, char**)
         assert(T::copy_constructed == 0);
         assert(T::move_constructed == 0);
         assert(static_cast<bool>(opt) == true);
-        assert(opt.value().value == 3);
+        assert(opt->value == 3);
     }
     {
         typedef ConstexprTestTypes::TestType T;
         constexpr optional<T> opt = {T(3)};
         static_assert(static_cast<bool>(opt) == true, "");
-        static_assert(opt.value().value == 3, "");
+        static_assert(opt->value == 3, "");
 
         struct test_constexpr_ctor
             : public optional<T>
@@ -110,7 +110,7 @@ int main(int, char**)
         typedef ConstexprTestTypes::TestType T;
         constexpr optional<T> opt = {3};
         static_assert(static_cast<bool>(opt) == true, "");
-        static_assert(opt.value().value == 3, "");
+        static_assert(opt->value == 3, "");
 
         struct test_constexpr_ctor
             : public optional<T>
@@ -123,7 +123,7 @@ int main(int, char**)
         static_assert(!std::is_convertible<T&&, optional<T>>::value, "");
         constexpr optional<T> opt(T{3});
         static_assert(static_cast<bool>(opt) == true, "");
-        static_assert(opt.value().value == 3, "");
+        static_assert(opt->value == 3, "");
 
         struct test_constexpr_ctor
             : public optional<T>

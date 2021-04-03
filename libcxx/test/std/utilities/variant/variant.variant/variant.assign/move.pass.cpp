@@ -279,7 +279,7 @@ void test_move_assignment_empty_non_empty() {
     V &vref = (v1 = std::move(v2));
     assert(&vref == &v1);
     assert(v1.index() == 0);
-    assert(std::get<0>(v1) == 42);
+    assert(*std::get_if<0>(&v1) == 42);
   }
   {
     using V = std::variant<int, MET, std::string>;
@@ -289,7 +289,7 @@ void test_move_assignment_empty_non_empty() {
     V &vref = (v1 = std::move(v2));
     assert(&vref == &v1);
     assert(v1.index() == 2);
-    assert(std::get<2>(v1) == "hello");
+    assert(*std::get_if<2>(&v1) == "hello");
   }
 #endif // TEST_HAS_NO_EXCEPTIONS
 }
@@ -304,7 +304,7 @@ void test_move_assignment_same_index() {
     V &vref = (v1 = std::move(v2));
     assert(&vref == &v1);
     assert(v1.index() == 0);
-    assert(std::get<0>(v1) == 42);
+    assert(*std::get_if<0>(&v1) == 42);
   }
   {
     using V = std::variant<int, long, unsigned>;
@@ -313,7 +313,7 @@ void test_move_assignment_same_index() {
     V &vref = (v1 = std::move(v2));
     assert(&vref == &v1);
     assert(v1.index() == 1);
-    assert(std::get<1>(v1) == 42);
+    assert(*std::get_if<1>(&v1) == 42);
   }
   {
     using V = std::variant<int, MoveAssign, unsigned>;
@@ -323,7 +323,7 @@ void test_move_assignment_same_index() {
     V &vref = (v1 = std::move(v2));
     assert(&vref == &v1);
     assert(v1.index() == 1);
-    assert(std::get<1>(v1).value == 42);
+    assert(std::get_if<1>(&v1)->value == 42);
     assert(MoveAssign::move_construct == 0);
     assert(MoveAssign::move_assign == 1);
   }
@@ -332,7 +332,7 @@ void test_move_assignment_same_index() {
   {
     using V = std::variant<int, MET, std::string>;
     V v1(std::in_place_type<MET>);
-    MET &mref = std::get<1>(v1);
+    MET &mref = *std::get_if<1>(&v1);
     V v2(std::in_place_type<MET>);
     try {
       v1 = std::move(v2);
@@ -340,7 +340,7 @@ void test_move_assignment_same_index() {
     } catch (...) {
     }
     assert(v1.index() == 1);
-    assert(&std::get<1>(v1) == &mref);
+    assert(std::get_if<1>(&v1) == &mref);
   }
 #endif // TEST_HAS_NO_EXCEPTIONS
 
@@ -353,7 +353,7 @@ void test_move_assignment_same_index() {
         V v(43);
         V v2(42);
         v = std::move(v2);
-        return {v.index(), std::get<0>(v)};
+        return {v.index(), *std::get_if<0>(&v)};
       }
     } test;
     constexpr auto result = test();
@@ -367,7 +367,7 @@ void test_move_assignment_same_index() {
         V v(43l);
         V v2(42l);
         v = std::move(v2);
-        return {v.index(), std::get<1>(v)};
+        return {v.index(), *std::get_if<1>(&v)};
       }
     } test;
     constexpr auto result = test();
@@ -381,7 +381,7 @@ void test_move_assignment_same_index() {
         V v(std::in_place_type<TMoveAssign>, 43);
         V v2(std::in_place_type<TMoveAssign>, 42);
         v = std::move(v2);
-        return {v.index(), std::get<1>(v).value};
+        return {v.index(), std::get_if<1>(&v)->value};
       }
     } test;
     constexpr auto result = test();
@@ -399,7 +399,7 @@ void test_move_assignment_different_index() {
     V &vref = (v1 = std::move(v2));
     assert(&vref == &v1);
     assert(v1.index() == 1);
-    assert(std::get<1>(v1) == 42);
+    assert(*std::get_if<1>(&v1) == 42);
   }
   {
     using V = std::variant<int, MoveAssign, unsigned>;
@@ -409,7 +409,7 @@ void test_move_assignment_different_index() {
     V &vref = (v1 = std::move(v2));
     assert(&vref == &v1);
     assert(v1.index() == 1);
-    assert(std::get<1>(v1).value == 42);
+    assert(std::get_if<1>(&v1)->value == 42);
     assert(MoveAssign::move_construct == 1);
     assert(MoveAssign::move_assign == 0);
   }
@@ -434,7 +434,7 @@ void test_move_assignment_different_index() {
     V &vref = (v1 = std::move(v2));
     assert(&vref == &v1);
     assert(v1.index() == 2);
-    assert(std::get<2>(v1) == "hello");
+    assert(*std::get_if<2>(&v1) == "hello");
   }
 #endif // TEST_HAS_NO_EXCEPTIONS
 
@@ -447,7 +447,7 @@ void test_move_assignment_different_index() {
         V v(43);
         V v2(42l);
         v = std::move(v2);
-        return {v.index(), std::get<1>(v)};
+        return {v.index(), *std::get_if<1>(&v)};
       }
     } test;
     constexpr auto result = test();
@@ -461,7 +461,7 @@ void test_move_assignment_different_index() {
         V v(std::in_place_type<unsigned>, 43u);
         V v2(std::in_place_type<TMoveAssign>, 42);
         v = std::move(v2);
-        return {v.index(), std::get<1>(v).value};
+        return {v.index(), std::get_if<1>(&v)->value};
       }
     } test;
     constexpr auto result = test();
@@ -480,7 +480,7 @@ constexpr bool test_constexpr_assign_imp(
   const auto cp = v2;
   v = std::move(v2);
   return v.index() == NewIdx &&
-        std::get<NewIdx>(v) == std::get<NewIdx>(cp);
+        *std::get_if<NewIdx>(&v) == *std::get_if<NewIdx>(&cp);
 }
 
 void test_constexpr_move_assignment() {

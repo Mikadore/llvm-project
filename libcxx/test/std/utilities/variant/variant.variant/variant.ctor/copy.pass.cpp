@@ -146,27 +146,27 @@ void test_copy_ctor_basic() {
     std::variant<int> v(std::in_place_index<0>, 42);
     std::variant<int> v2 = v;
     assert(v2.index() == 0);
-    assert(std::get<0>(v2) == 42);
+    assert(*std::get_if<0>(&v2) == 42);
   }
   {
     std::variant<int, long> v(std::in_place_index<1>, 42);
     std::variant<int, long> v2 = v;
     assert(v2.index() == 1);
-    assert(std::get<1>(v2) == 42);
+    assert(*std::get_if<1>(&v2) == 42);
   }
   {
     std::variant<NonT> v(std::in_place_index<0>, 42);
     assert(v.index() == 0);
     std::variant<NonT> v2(v);
     assert(v2.index() == 0);
-    assert(std::get<0>(v2).value == 42);
+    assert((*std::get_if<0>(&v2)).value == 42);
   }
   {
     std::variant<int, NonT> v(std::in_place_index<1>, 42);
     assert(v.index() == 1);
     std::variant<int, NonT> v2(v);
     assert(v2.index() == 1);
-    assert(std::get<1>(v2).value == 42);
+    assert((*std::get_if<1>(&v)).value == 42);
   }
 
   // Make sure we properly propagate triviality, which implies constexpr-ness (see P0602R4).
@@ -176,42 +176,42 @@ void test_copy_ctor_basic() {
     static_assert(v.index() == 0, "");
     constexpr std::variant<int> v2 = v;
     static_assert(v2.index() == 0, "");
-    static_assert(std::get<0>(v2) == 42, "");
+    static_assert(*std::get_if<0>(&v2) == 42, "");
   }
   {
     constexpr std::variant<int, long> v(std::in_place_index<1>, 42);
     static_assert(v.index() == 1, "");
     constexpr std::variant<int, long> v2 = v;
     static_assert(v2.index() == 1, "");
-    static_assert(std::get<1>(v2) == 42, "");
+    static_assert(*std::get_if<1>(&v2) == 42, "");
   }
   {
     constexpr std::variant<TCopy> v(std::in_place_index<0>, 42);
     static_assert(v.index() == 0, "");
     constexpr std::variant<TCopy> v2(v);
     static_assert(v2.index() == 0, "");
-    static_assert(std::get<0>(v2).value == 42, "");
+    static_assert((*std::get_if<0>(&v2)).value == 42, "");
   }
   {
     constexpr std::variant<int, TCopy> v(std::in_place_index<1>, 42);
     static_assert(v.index() == 1, "");
     constexpr std::variant<int, TCopy> v2(v);
     static_assert(v2.index() == 1, "");
-    static_assert(std::get<1>(v2).value == 42, "");
+    static_assert((*std::get_if<1>(&v)).value == 42, "");
   }
   {
     constexpr std::variant<TCopyNTMove> v(std::in_place_index<0>, 42);
     static_assert(v.index() == 0, "");
     constexpr std::variant<TCopyNTMove> v2(v);
     static_assert(v2.index() == 0, "");
-    static_assert(std::get<0>(v2).value == 42, "");
+    static_assert((*std::get_if<0>(&v2)).value == 42, "");
   }
   {
     constexpr std::variant<int, TCopyNTMove> v(std::in_place_index<1>, 42);
     static_assert(v.index() == 1, "");
     constexpr std::variant<int, TCopyNTMove> v2(v);
     static_assert(v2.index() == 1, "");
-    static_assert(std::get<1>(v2).value == 42, "");
+    static_assert((*std::get_if<1>(&v)).value == 42, "");
   }
 #endif // > C++17
 }
@@ -232,7 +232,7 @@ constexpr bool test_constexpr_copy_ctor_imp(std::variant<long, void*, const int>
   auto v2 = v;
   return v2.index() == v.index() &&
          v2.index() == Idx &&
-         std::get<Idx>(v2) == std::get<Idx>(v);
+         *std::get_if<Idx>(&v2) == *std::get_if<Idx>(&v);
 }
 
 void test_constexpr_copy_ctor() {

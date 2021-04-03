@@ -39,17 +39,18 @@ int main(int, char**)
 {
     {
         const optional<X> opt; ((void)opt);
-        ASSERT_NOT_NOEXCEPT(std::move(opt).value());
-        ASSERT_SAME_TYPE(decltype(std::move(opt).value()), X const&&);
+        //ASSERT_NOT_NOEXCEPT(std::move(opt).value());
+        ASSERT_SAME_TYPE(decltype(*std::move(opt)), X const&&);
     }
     {
         constexpr optional<X> opt(in_place);
-        static_assert(std::move(opt).value().test() == 5, "");
+        static_assert((*std::move(opt)).test() == 5, "");
     }
     {
         const optional<X> opt(in_place);
-        assert(std::move(opt).value().test() == 5);
+        assert((*std::move(opt)).test() == 5);
     }
+    /*
 #ifndef TEST_HAS_NO_EXCEPTIONS
     {
         const optional<X> opt;
@@ -63,6 +64,7 @@ int main(int, char**)
         }
     }
 #endif
+    */
 
   return 0;
 }

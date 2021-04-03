@@ -152,7 +152,7 @@ std::wstring quote ( const wchar_t *p, wchar_t delim='"', wchar_t escape='\\' ) 
 
 std::wstring unquote ( const wchar_t *p, wchar_t delim='"', wchar_t escape='\\' ) {
     std::wstringstream ss;
-    std::wstring_view sv {p};
+    std::wstring sv {p};
 
     ss << sv;
     std::wstring s;

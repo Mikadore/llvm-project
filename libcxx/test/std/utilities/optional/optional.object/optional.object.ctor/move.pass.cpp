@@ -178,8 +178,8 @@ int main(int, char**)
         const optional<T> lhs(std::move(rhs));
         assert(lhs.has_value());
         assert(rhs.has_value());
-        assert(lhs.value().value == 42);
-        assert(rhs.value().value == -1);
+        assert(lhs->value == 42);
+        assert(rhs->value == -1);
         assert(T::move_constructed == 1);
         assert(T::alive == 2);
     }

@@ -93,14 +93,14 @@ void test_ctor_basic() {
     constexpr std::variant<InitList, InitListArg> v(
         std::in_place_type<InitList>, {1, 2, 3});
     static_assert(v.index() == 0, "");
-    static_assert(std::get<0>(v).size == 3, "");
+    static_assert((*std::get_if<0>(&v)).size == 3, "");
   }
   {
     constexpr std::variant<InitList, InitListArg> v(
         std::in_place_type<InitListArg>, {1, 2, 3, 4}, 42);
     static_assert(v.index() == 1, "");
-    static_assert(std::get<1>(v).size == 4, "");
-    static_assert(std::get<1>(v).value == 42, "");
+    static_assert((*std::get_if<1>(&v)).size == 4, "");
+    static_assert((*std::get_if<1>(&v)).value == 42, "");
   }
 }
 
